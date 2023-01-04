@@ -2,6 +2,8 @@
 
 ```diff
 - ADAPTED FOR FLUVIUS BELGIUM, 3 PHASE METER
+
+! TODO: Support code 1.6.0 @ firmware 1.99 for Sagemcom meter; am currently at 1.92
 ```
 
 ESPHome custom component for reading P1 data from electricity meters. Designed for Swedish meters that implements the specification defined in the [Swedish Energy Industry Recommendation For Customer Interfaces](https://www.energiforetagen.se/forlag/elnat/branschrekommendation-for-lokalt-kundgranssnitt-for-elmatare/) version 1.3 and above.
