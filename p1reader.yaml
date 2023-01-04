@@ -1,7 +1,7 @@
 esphome:
   name: esp-p1reader
-  platform: ESP8266
-  board: nodemcu
+  platform: esp32
+  board: esp32dev
   includes:
     - p1reader.h
 
@@ -30,151 +30,150 @@ ota:
 
 uart:
   id: uart_bus
-  tx_pin: TX
-  rx_pin: RX
+    rx_pin:
+      number: GPIO3
+      inverted: true
   baud_rate: 115200
   
 sensor:
 - platform: custom
+
   lambda: |-
     auto meter_sensor = new P1Reader(id(uart_bus));
     App.register_component(meter_sensor);
     return {
-      meter_sensor->cumulativeActiveImport,
-      meter_sensor->cumulativeActiveExport,
-      meter_sensor->cumulativeReactiveImport,
-      meter_sensor->cumulativeReactiveExport,
-      meter_sensor->momentaryActiveImport,
-      meter_sensor->momentaryActiveExport,
-      meter_sensor->momentaryReactiveImport,
-      meter_sensor->momentaryReactiveExport,
-      meter_sensor->momentaryActiveImportL1,
-      meter_sensor->momentaryActiveExportL1,
-      meter_sensor->momentaryActiveImportL2,
-      meter_sensor->momentaryActiveExportL2,
-      meter_sensor->momentaryActiveImportL3,
-      meter_sensor->momentaryActiveExportL3,
-      meter_sensor->momentaryReactiveImportL1,
-      meter_sensor->momentaryReactiveExportL1,
-      meter_sensor->momentaryReactiveImportL2,
-      meter_sensor->momentaryReactiveExportL2,
-      meter_sensor->momentaryReactiveImportL3,
-      meter_sensor->momentaryReactiveExportL3,
-      meter_sensor->voltageL1,
-      meter_sensor->voltageL2,
-      meter_sensor->voltageL3,
-      meter_sensor->currentL1,
-      meter_sensor->currentL2,
-      meter_sensor->currentL3
+      meter_sensor->pIn,
+      meter_sensor->pOut,
+
+      meter_sensor->u1,
+      meter_sensor->u2,
+      meter_sensor->u3,
+
+      meter_sensor->i1,
+      meter_sensor->i2,
+      meter_sensor->i3,
+
+      meter_sensor->eActiveIn,
+      meter_sensor->eActiveInDay,
+      meter_sensor->eActiveInNight,
+
+      meter_sensor->eActiveOut,
+      meter_sensor->eActiveOutDay,
+      meter_sensor->eActiveOutNight,
+
+      meter_sensor->p1In,
+      meter_sensor->p2In,
+      meter_sensor->p3In,
+
+      meter_sensor->p1Out,
+      meter_sensor->p2Out,
+      meter_sensor->p3Out
     };
+  
   sensors:
-  - name: "Cumulative Active Import"
-    unit_of_measurement: kWh
+    - name: "Momentary Power Import"
+      unit_of_measurement: kW
     accuracy_decimals: 3
-    state_class: "total_increasing"
+      state_class: "measurement"
     device_class: "energy"
-  - name: "Cumulative Active Export"
-    unit_of_measurement: kWh
+    - name: "Momentary Power Export"
+      unit_of_measurement: kW
     accuracy_decimals: 3
-    state_class: "total_increasing"
+      state_class: "measurement"
     device_class: "energy"
-  - name: "Cumulative Reactive Import"
-    unit_of_measurement: kvarh
+    
+    - name: "Voltage Phase 1"
+      unit_of_measurement: V
     accuracy_decimals: 3
-  - name: "Cumulative Reactive Export"
-    unit_of_measurement: kvarh
+      state_class: "measurement"
+      device_class: "voltage"
+    - name: "Voltage Phase 2"
+      unit_of_measurement: V
     accuracy_decimals: 3
-  - name: "Momentary Active Import"
+      state_class: "measurement"
+      device_class: "voltage"
+    - name: "Voltage Phase 3"
+      unit_of_measurement: V
+      accuracy_decimals: 3
+      state_class: "measurement"
+      device_class: "voltage"
+
+    - name: "Current Phase 1"
+      unit_of_measurement: A
+      accuracy_decimals: 3
+      state_class: "measurement"
+      device_class: "current"
+    - name: "Current Phase 2"
+      unit_of_measurement: A
+    accuracy_decimals: 3
+    state_class: "measurement"
+      device_class: "current"
+    - name: "Current Phase 3"
+      unit_of_measurement: A
+    accuracy_decimals: 3
+    state_class: "measurement"
+      device_class: "current"
+
+    - name: "Cumulative Active Energy Import"
+      unit_of_measurement: kWh
+      accuracy_decimals: 3
+      state_class: "total_increasing"
+      device_class: "energy"
+    - name: "Cumulative Active Energy Import Day"
+      unit_of_measurement: kWh
+      accuracy_decimals: 3
+      state_class: "total_increasing"
+      device_class: "energy"
+    - name: "Cumulative Active Energy Import Night"
+      unit_of_measurement: kWh
+      accuracy_decimals: 3
+      state_class: "total_increasing"
+      device_class: "energy"
+
+    - name: "Cumulative Active Energy Export"
+      unit_of_measurement: kWh
+      accuracy_decimals: 3
+      state_class: "total_increasing"
+      device_class: "energy"
+    - name: "Cumulative Active Energy Export Day"
+      unit_of_measurement: kWh
+    accuracy_decimals: 3
+      state_class: "total_increasing"
+      device_class: "energy"
+    - name: "Cumulative Active Energy Export Night"
+      unit_of_measurement: kWh
+    accuracy_decimals: 3
+      state_class: "total_increasing"
+      device_class: "energy"
+
+    - name: "Momentary Active Power Import Phase 1"
     unit_of_measurement: kW
     accuracy_decimals: 3
     state_class: "measurement"
     device_class: "power"
-  - name: "Momentary Active Export"
+    - name: "Momentary Active Power Import Phase 2"
     unit_of_measurement: kW
     accuracy_decimals: 3
     state_class: "measurement"
     device_class: "power"
-  - name: "Momentary Reactive Import"
-    unit_of_measurement: kvar
-    accuracy_decimals: 3
-  - name: "Momentary Reactive Export"
-    unit_of_measurement: kvar
-    accuracy_decimals: 3
-  - name: "Momentary Active Import Phase 1"
+    - name: "Momentary Active Power Import Phase 3"
     unit_of_measurement: kW
     accuracy_decimals: 3
     state_class: "measurement"
     device_class: "power"
-  - name: "Momentary Active Export Phase 1"
+
+    - name: "Momentary Active Power Export Phase 1"
     unit_of_measurement: kW
     accuracy_decimals: 3
     state_class: "measurement"
     device_class: "power"
-  - name: "Momentary Active Import Phase 2"
+    - name: "Momentary Active Power Export Phase 2"
     unit_of_measurement: kW
     accuracy_decimals: 3
     state_class: "measurement"
     device_class: "power"
-  - name: "Momentary Active Export Phase 2"
+    - name: "Momentary Active Power Export Phase 3"
     unit_of_measurement: kW
     accuracy_decimals: 3
     state_class: "measurement"
     device_class: "power"
-  - name: "Momentary Active Import Phase 3"
-    unit_of_measurement: kW
-    accuracy_decimals: 3
-    state_class: "measurement"
-    device_class: "power"
-  - name: "Momentary Active Export Phase 3"
-    unit_of_measurement: kW
-    accuracy_decimals: 3
-    state_class: "measurement"
-    device_class: "power"
-  - name: "Momentary Reactive Import Phase 1"
-    unit_of_measurement: kvar
-    accuracy_decimals: 3
-  - name: "Momentary Reactive Export Phase 1"
-    unit_of_measurement: kvar
-    accuracy_decimals: 3
-  - name: "Momentary Reactive Import Phase 2"
-    unit_of_measurement: kvar
-    accuracy_decimals: 3
-  - name: "Momentary Reactive Export Phase 2"
-    unit_of_measurement: kvar
-    accuracy_decimals: 3
-  - name: "Momentary Reactive Import Phase 3"
-    unit_of_measurement: kvar
-    accuracy_decimals: 3
-  - name: "Momentary Reactive Export Phase 3"
-    unit_of_measurement: kvar
-    accuracy_decimals: 3
-  - name: "Voltage Phase 1"
-    unit_of_measurement: V
-    accuracy_decimals: 3
-    state_class: "measurement"
-    device_class: "voltage"
-  - name: "Voltage Phase 2"
-    unit_of_measurement: V
-    accuracy_decimals: 3
-    state_class: "measurement"
-    device_class: "voltage"
-  - name: "Voltage Phase 3"
-    unit_of_measurement: V
-    accuracy_decimals: 3
-    state_class: "measurement"
-    device_class: "voltage"
-  - name: "Current Phase 1"
-    unit_of_measurement: A
-    accuracy_decimals: 3
-    state_class: "measurement"
-    device_class: "current"
-  - name: "Current Phase 2"
-    unit_of_measurement: A
-    accuracy_decimals: 3
-    state_class: "measurement"
-    device_class: "current"
-  - name: "Current Phase 3"
-    unit_of_measurement: A
-    accuracy_decimals: 3
-    state_class: "measurement"
-    device_class: "current"
